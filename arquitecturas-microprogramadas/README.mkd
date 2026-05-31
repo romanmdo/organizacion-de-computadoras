@@ -1,0 +1,64 @@
+# Procesador Microprogramado de 16 bits
+
+Este proyecto implementa una unidad central de procesamiento (CPU) microprogramada y su correspondiente conjunto de instrucciones (ISA). 
+
+Desarrollado como trabajo práctico para la materia **Organización de Computadoras**, correspondiente a la **Licenciatura en Ciencias de la Computación** de la **Universidad Nacional de Río Cuarto (UNRC)**. El objetivo principal es comprender el funcionamiento interno del hardware, el ciclo de instrucción y el manejo de subrutinas a bajo nivel mediante la pila (Stack).
+
+## 🛠️ Requisitos del Sistema
+
+Para ejecutar y simular esta arquitectura, se requiere el siguiente entorno:
+
+* **Simulador:** [CPUSim 4](https://www.cs.colby.edu/djskrien/CPUSim/)
+* **Entorno de ejecución:** Java 8 (JRE 1.8). *Nota: Es fundamental mantener esta versión específica de Java para garantizar la compatibilidad y estabilidad total del entorno de CPUSim.*
+
+## ⚙️ Especificaciones de la Arquitectura
+
+El procesador está diseñado con un enfoque didáctico con las siguientes características de hardware:
+
+* **Ancho de palabra (Data Width):** 16 bits.
+* **Memoria RAM:** 256 direcciones direccionables.
+* **Gestión de Memoria:** Separación lógica entre la zona de Código/Datos Globales (crece desde la dirección 0 hacia abajo) y la Pila o *Stack* (crece desde la dirección 256 hacia arriba).
+
+### 🗄️ Registros Principales
+
+* `A` (16 bits): Registro de propósito general (Acumulador principal).
+* `B` (16 bits): Registro de propósito general secundario.
+* `PC` (10 bits): Program Counter. Apunta a la próxima instrucción a ejecutar.
+* `SP` (10 bits): Stack Pointer. Apunta al tope de la pila (Inicializado por defecto en 256).
+* `BP` (10 bits): Base Pointer. Se utiliza como ancla o referencia fija para acceder a variables locales y parámetros dentro de una subrutina.
+* `IR` (16 bits): Instruction Register.
+* `MAR` (10 bits): Memory Address Register.
+* `MDR` (16 bits): Memory Data Register.
+* `FLAGS` (3 bits): Registro de estado para operaciones condicionales.
+
+## 📜 Conjunto de Instrucciones (ISA)
+
+**Transferencia y Memoria:**
+* `LOAD <Dir> <Reg>`: Carga un valor de la memoria RAM a un registro (A o B).
+* `SAVE <Reg> <Dir>`: Guarda el valor de un registro en la memoria RAM.
+* `MOVE <RegOrigen> <RegDestino>`: Copia el valor entre registros (Soporta A, B y BP).
+
+**Aritmética:**
+* `ADD <Dir> <Reg>`: Suma el valor de una dirección de memoria al registro especificado.
+
+**Entrada / Salida:**
+* `IN <Reg>`: Lee un valor entero desde la consola hacia el registro.
+* `OUT <Reg>`: Imprime el valor del registro en la consola.
+
+**Manejo de Pila (Stack) y Subrutinas:**
+* `PUSH <Reg>`: Guarda el valor de un registro (A, B o BP) en el tope de la pila, decrementando el SP.
+* `POP <Reg>`: Extrae el valor del tope de la pila y lo guarda en un registro, incrementando el SP.
+* `CALL <Subrutina>`: Salta a una subrutina guardando la dirección de retorno (PC) en la pila.
+* `RET`: Retorna de una subrutina extrayendo la dirección de retorno de la pila y restaurando el PC.
+
+**Control de Flujo:**
+* `STOP`: Detiene la ejecución del procesador.
+
+## 🚀 Cómo ejecutar un programa
+
+1. Abrir **CPUSim 4**.
+2. Cargar el archivo de la máquina virtual (`.cpu` / `.machine`) desde `File -> Load Machine`.
+3. Abrir o escribir el código fuente en Assembly (`.mac` / texto) en el editor integrado.
+4. Ensamblar el código utilizando el botón **Assemble** (o `Execute -> Assemble`).
+5. Asegurarse de que el registro `SP` tenga el valor `256` (formato decimal).
+6. Ejecutar el programa con el botón **Run** (o `Execute -> Run`). Los resultados de las instrucciones `IN`/`OUT` se mostrarán en la ventana de la consola inferior.
