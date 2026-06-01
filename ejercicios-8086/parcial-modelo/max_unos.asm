@@ -1,7 +1,7 @@
 %include "asm_io.inc" 
 
 section .data
-    nums dd 1, 2, 3, 4, 5 ; Elems
+    num dd 4b ; Elems
 section .bss
 
 section .text
@@ -12,15 +12,19 @@ asm_main:
     enter   0,0            
     pusha                  
 
-    mov eax, 0 ; Acc
-    mov ebx, 0 ; indice
-    mov ecx, 5 ; Vueltas
+    mov eax, [num]
+    mov ebx, 32 ; vueltas
+    mov ecx, 0 ; Acc
 
-    while: 
-        mov edx, [nums + ebx * 4]
-        call mayor 
+    .while:
+        shr eax, 1
+        jnc .es_cero
+        inc ecx
         inc ebx
-        loop while
+    
+    .es_cero:
+        sub ecx, ecx
+        loop .while
 
     ; --- EPILOGO ---
     popa                   
@@ -31,12 +35,3 @@ asm_main:
 ; ==================================================
 ;             ZONA DE SUBRUTINAS
 ; ==================================================
-
-mayor: 
-    cmp eax, edx
-    jg bloque_else
-    mov eax, edx
-    ret
-
-    bloque_else:
-    ret
